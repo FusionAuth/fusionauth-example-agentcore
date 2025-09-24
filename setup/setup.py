@@ -43,6 +43,7 @@ invoke_permission_request = {
 client_response = client.create_entity_type_permission(entity_type_id, invoke_permission_request)
 
 if client_response.was_successful():
+    print("Success in creating entity type")
     print(client_response.success_response)
 else:
     print(client_response.error_response)
@@ -71,6 +72,7 @@ lambda_id = uuid.uuid4()
 client_response = client.create_lambda(lambda_request, lambda_id)
 
 if client_response.was_successful():
+    print("Success in creating lambda")
     print(client_response.success_response)
 else:
     print(client_response.error_response)
@@ -89,6 +91,7 @@ if client_response.was_successful():
         update_response = client.patch_tenant(tenant_id, {"tenant": tenant_request})
     
         if client_response.was_successful():
+            print("Success in updating tenant")
             print(update_response.success_response)
         else:
             print(update_response.error_response)

@@ -2,7 +2,6 @@ from fusionauth.fusionauth_client import FusionAuthClient
 import uuid
 import os
 from dotenv import load_dotenv
-import pprint
 
 # Load environment variables from .env file
 load_dotenv()
@@ -78,7 +77,7 @@ draft_entities = find_entities_by_data_type('draftcontent')
 validate_entities = find_entities_by_data_type('validatecontent')
 polish_entities = find_entities_by_data_type('polishcontent')
 
-# Combine all found entities
+# Combine all found entities. you might want to filter this and only pick the first one of each type.
 target_entities = draft_entities + validate_entities + polish_entities 
 
 # Function to create grants with 'invoke' scope
@@ -93,7 +92,6 @@ def create_entity_grant(recipient_entity_id, target_entity_id):
     }
     
     grant_response = client.upsert_entity_grant(target_entity_id, grant_request)
-    pprint.pprint(grant_response.error_response)
     
     if grant_response.was_successful():
         return True

@@ -52,9 +52,9 @@ class FusionAuthEntityManager:
             if response.was_successful():
                 entities = response.success_response.get('entities', [])
                 if entities:
-                    # Return the client_id of the first matching entity
+                    # Return the client_id, systemprompt of the first matching entity
                     first_entity = entities[0]
-                    return first_entity.get('clientId')
+                    return first_entity.get('clientId'),  first_entity.get('data').get('systemprompt')
                 else:
                     print(f"No entities found with type: {entity_type_name}")
                     return None
@@ -106,10 +106,10 @@ if supervisor_client_id is None or supervisor_client_secret is None:
     exit(1)
 
 validate_content_entity_type = 'validatecontent'
-validate_content_client_id = entity_manager.find_entity_by_type(validate_content_entity_type)
+validate_content_client_id, validate_content_system_prompt = entity_manager.find_entity_by_type(validate_content_entity_type)
 
-if validate_content_client_id is None:
-    print("Failed to obtain target client id")
+if validate_content_client_id is None or validate_content_system_prompt is None:
+    print("Failed to obtain target client id or system prompt")
     exit(1)
 
 access_token = entity_manager.perform_client_credentials_grant(
@@ -155,10 +155,15 @@ headers = {
 #logging.basicConfig(level=logging.DEBUG)
 #logging.getLogger("urllib3.connectionpool").setLevel(logging.DEBUG)
 
+content = "this is a blog post placeholder"
+#with open('file.txt', 'r') as file:
+ #   content = file.read()
+    #print(content)
+
 invoke_response = requests.post(
     url,
     headers=headers,
-    data=json.dumps({"prompt": "please tell me what is the best way to integrate FusionAuth with an application written with rails?", "system_prompt":"You are a FusionAuth expert who knows OIDC in and out but not rails"})
+    data=json.dumps({"system_prompt": validate_content_system_prompt, "prompt": "please validate this blog post from a technical point of view. if necessary, please rewrite it. Please return only the content, no preface or other commentary.\n\n"+content})
 )
 
 # Print response in a safe manner

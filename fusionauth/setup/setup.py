@@ -86,6 +86,7 @@ if client_response.was_successful():
     for tenant in tenants:
         tenant_id = tenant['id']
         tenant_request = {}
+        tenant_request['issuer'] = base_url
         tenant_request['oauthConfiguration'] = {}
         tenant_request['oauthConfiguration']['clientCredentialsAccessTokenPopulateLambdaId'] = str(lambda_id)
         update_response = client.patch_tenant(tenant_id, {"tenant": tenant_request})

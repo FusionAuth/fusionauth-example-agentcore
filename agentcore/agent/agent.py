@@ -5,6 +5,7 @@ from strands import Agent
 from strands.tools.mcp.mcp_client import MCPClient
 import logging
 
+# use the cloudwatch logger
 logger = logging.getLogger("bedrock_agentcore.app")
 
 app = BedrockAgentCoreApp()
@@ -17,6 +18,7 @@ def invoke(payload):
     system_message = payload.get("system_prompt", "")
     doc_tools_enabled = payload.get("doc_tools_enabled", False)
     model = payload.get("model")
+
     if model is None or model == "":
         #model =  "anthropic.claude-3-5-sonnet-20240620-v1:0"
         # need the us prefix, per https://strandsagents.com/latest/documentation/docs/user-guide/concepts/model-providers/amazon-bedrock/#on-demand-throughput-isnt-supported

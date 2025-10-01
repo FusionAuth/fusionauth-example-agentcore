@@ -58,11 +58,11 @@ else:
     print(client_response.error_response)
 
 # Function to search for entities by type in data field
-def find_entities_by_data_type(target_type):
-    """Find entities that have a specific type in their data field"""
+def find_entities_by_data_agenttype(target_type):
+    """Find entities that have a specific agenttype in their data field"""
 
     # Retrieve entities
-    entities_response = client.search_entities({ "search": {"queryString": "data.type: "+target_type }})
+    entities_response = client.search_entities({ "search": {"queryString": "data.agenttype: "+target_type }})
 
     entities = []
 
@@ -73,9 +73,9 @@ def find_entities_by_data_type(target_type):
     
     return entities
 
-draft_entities = find_entities_by_data_type('draftcontent')
-validate_entities = find_entities_by_data_type('validatecontent')
-polish_entities = find_entities_by_data_type('polishcontent')
+draft_entities = find_entities_by_data_agenttype('draftcontent')
+validate_entities = find_entities_by_data_agenttype('validatecontent')
+polish_entities = find_entities_by_data_agenttype('polishcontent')
 
 # Combine all found entities. you might want to filter this and only pick the first one of each type.
 target_entities = draft_entities + validate_entities + polish_entities 
@@ -113,5 +113,5 @@ if target_entities:
     
     print(f"\nGrant creation summary: {successful_grants}/{len(target_entities)} grants created successfully")
 else:
-    print("\nNo entities found with types 'abc' or 'def' - no grants to create")
+    print("\nNo entities found - no grants to create")
 

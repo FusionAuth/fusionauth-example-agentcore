@@ -183,7 +183,7 @@ def handle_validation():
     invoke_agent_arn = "arn:aws:bedrock-agentcore:us-west-2:011271748719:runtime/validateagent-dgzTssFW2J"
     
     content = "this is a blog post placeholder"
-    with open('file.txt', 'r') as file:
+    with open('drafted.md', 'r') as file:
         content = file.read()
         #print(content)
 
@@ -205,7 +205,7 @@ def handle_validation():
         result_content = content
 
     if result_content:
-        with open('validated.txt', 'w') as file:
+        with open('validated.md', 'w') as file:
             file.write(result_content)
 
 
@@ -216,7 +216,7 @@ def handle_polishing():
 
     invoke_agent_arn = "arn:aws:bedrock-agentcore:us-west-2:011271748719:runtime/polishagent-f55YTAHrt2"
     
-    with open('validated.txt', 'r') as file:
+    with open('validated.md', 'r') as file:
         content = file.read()
         #print(content)
 
@@ -226,7 +226,7 @@ def handle_polishing():
 
     polished_result = invoke_agent(invoke_agent_arn, REGION_NAME, polish_content_system_prompt, polish_prompt, content, session_uuid, access_token, model)
     if polished_result:
-        with open('polished.txt', 'w') as file:
+        with open('polished.md', 'w') as file:
            file.write(polished_result)
 
 def handle_drafting():
@@ -236,7 +236,7 @@ def handle_drafting():
 
     invoke_agent_arn = "arn:aws:bedrock-agentcore:us-west-2:011271748719:runtime/draftagent-3HGlni7thC"
     
-    with open('outline.txt', 'r') as file:
+    with open('outline.md', 'r') as file:
         content = file.read()
 
     write_prompt = "please write a blog post based on the following outline. Target 1500-3000 words. Please mimic the style found on https://fusionauth.io/blog, which is friendly and precise. The audience is engineering leaders. Please return just the content, not the outline or any other commentary.\n\n"+content
@@ -245,7 +245,7 @@ def handle_drafting():
 
     draft_result = invoke_agent(invoke_agent_arn, REGION_NAME, draft_content_system_prompt, write_prompt, content, session_uuid, access_token, model)
     if draft_result:
-        with open('file.txt', 'w') as file:
+        with open('drafted.md', 'w') as file:
             file.write(draft_result)
 
 def main():

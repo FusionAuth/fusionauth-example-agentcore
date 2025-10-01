@@ -59,17 +59,21 @@ else:
     print(entity_types_response.error_response)
     exit(1)
 
+# enabled models can be found in the Bedrock Console
+
 draft_content_data = {
-    "type": "draftcontent",
-    "systemprompt": "You are a content expert who knows FusionAuth inside and outside. You follow the FusionAuth brand guidelines."
+    "agenttype": "draftcontent",
+    "systemprompt": "You are a content expert who knows FusionAuth inside and outside. You follow the FusionAuth brand guidelines.",
+    "model": "deepseek.v3-v1:0"
 }
 validate_content_data = {
-    "type": "validatecontent",
+    "agenttype": "validatecontent",
     "systemprompt": "You are a technical expert who knows FusionAuth very well, and has implemented it multiple times. You are extremely detail oriented and will flag any technical errors you see with content."
 }
 polish_content_data = {
-    "type": "polishcontent",
-    "systemprompt": "You are a content expert who has written many highly rated technical articles. You follow the FusionAuth brand guidelines."
+    "agenttype": "polishcontent",
+    "systemprompt": "You are a content expert who has written many highly rated technical articles. You follow the FusionAuth brand guidelines.",
+    "model": "meta.llama3-3-70b-instruct-v1:0"
 }
 create_agent_entity("Draft Agent", draft_content_data);
 create_agent_entity("Validate Agent", validate_content_data);

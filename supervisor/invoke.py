@@ -59,7 +59,7 @@ class FusionAuthEntityManager:
                     model = None
                     if first_entity.get('data').get('model'):
                         model = first_entity.get('data').get('model')
-                    return first_entity.get('clientId'), first_entity.get('data').get('systemprompt'), model
+                    return first_entity.get('clientId'), first_entity.get('data').get('systemprompt'), model, first_entity.get('data').get('agentarn'),
                 else:
                     print(f"No entities found with type: {entity_agenttype_name}")
                     return None
@@ -157,7 +157,7 @@ def get_config(entity_agenttype):
        print("Failed to retrieve client credentials from entity by ID")
        exit(1)
    
-   client_id, system_prompt, model = entity_manager.find_entity_by_agenttype(entity_agenttype)
+   client_id, system_prompt, model, agentarn = entity_manager.find_entity_by_agenttype(entity_agenttype)
    
    if client_id is None or system_prompt is None:
        # model has a default
@@ -173,14 +173,14 @@ def get_config(entity_agenttype):
    if access_token is None:
        print("Failed to obtain access token")
        exit(1)
-   return access_token, system_prompt, model
+   return access_token, system_prompt, model, agentarn
 
 def handle_validation():
     validate_content_entity_type = 'validatecontent'
 
-    access_token, validate_content_system_prompt, model = get_config(validate_content_entity_type)
+    access_token, validate_content_system_prompt, model, invoke_agent_arn = get_config(validate_content_entity_type)
 
-    invoke_agent_arn = "arn:aws:bedrock-agentcore:us-west-2:011271748719:runtime/validateagent-dgzTssFW2J"
+    # invoke_agent_arn = "arn:aws:bedrock-agentcore:us-west-2:011271748719:runtime/validateagent-dgzTssFW2J"
     
     content = "this is a blog post placeholder"
     with open('drafted.md', 'r') as file:
@@ -212,9 +212,9 @@ def handle_validation():
 def handle_polishing():
     polish_content_entity_type = 'polishcontent'
 
-    access_token, polish_content_system_prompt, model = get_config(polish_content_entity_type)
+    access_token, polish_content_system_prompt, model, invoke_agent_arn = get_config(polish_content_entity_type)
 
-    invoke_agent_arn = "arn:aws:bedrock-agentcore:us-west-2:011271748719:runtime/polishagent-f55YTAHrt2"
+    # invoke_agent_arn = "arn:aws:bedrock-agentcore:us-west-2:011271748719:runtime/polishagent-f55YTAHrt2"
     
     with open('validated.md', 'r') as file:
         content = file.read()
@@ -232,9 +232,9 @@ def handle_polishing():
 def handle_drafting():
     draft_content_entity_type = 'draftcontent'
 
-    access_token, draft_content_system_prompt, model = get_config(draft_content_entity_type)
+    access_token, draft_content_system_prompt, model, invoke_agent_arn = get_config(draft_content_entity_type)
 
-    invoke_agent_arn = "arn:aws:bedrock-agentcore:us-west-2:011271748719:runtime/draftagent-3HGlni7thC"
+    # invoke_agent_arn = "arn:aws:bedrock-agentcore:us-west-2:011271748719:runtime/draftagent-3HGlni7thC"
     
     with open('outline.md', 'r') as file:
         content = file.read()

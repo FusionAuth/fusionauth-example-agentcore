@@ -93,7 +93,7 @@ class FusionAuthEntityManager:
             return None
 
 
-def invoke_agent(agent_arn, region, system_prompt, prompt, content, session_uuid, access_token, model):
+def invoke_agent(agent_arn, region, system_prompt, prompt, content, session_uuid, access_token, model, doc_tools_enabled=False):
 
     # print(f"Using Agent ARN from environment: {invoke_agent_arn}")
 
@@ -116,7 +116,7 @@ def invoke_agent(agent_arn, region, system_prompt, prompt, content, session_uuid
     invoke_response = requests.post(
         url,
         headers=headers,
-        data=json.dumps({"system_prompt": system_prompt, "prompt": prompt, "model": model})
+        data=json.dumps({"system_prompt": system_prompt, "prompt": prompt, "model": model, doc_tools_enabled: doc_tools_enabled})
     )
 
     # Print response in a safe manner
@@ -180,8 +180,6 @@ def handle_validation():
 
     access_token, validate_content_system_prompt, model, invoke_agent_arn = get_config(validate_content_entity_type)
 
-    # invoke_agent_arn = "arn:aws:bedrock-agentcore:us-west-2:011271748719:runtime/validateagent-dgzTssFW2J"
-    
     content = "this is a blog post placeholder"
     with open('drafted.md', 'r') as file:
         content = file.read()
@@ -195,10 +193,11 @@ def handle_validation():
 
     # first validate the blog post, then rewrite if needed
     result_content = ""
-    validate_result = invoke_agent(invoke_agent_arn, REGION_NAME, validate_content_system_prompt, validate_check_prompt, content, session_uuid, access_token, model)
+    doc_tools_enabled = True
+    validate_result = invoke_agent(invoke_agent_arn, REGION_NAME, validate_content_system_prompt, validate_check_prompt, content, session_uuid, access_token, model, doc_tools_enabled)
     if validate_result != "valid":
         print("blog post had some invalid claims")
-        rewrite_result = invoke_agent(invoke_agent_arn, REGION_NAME, validate_content_system_prompt, rewrite_prompt, content, session_uuid, access_token, model)
+        rewrite_result = invoke_agent(invoke_agent_arn, REGION_NAME, validate_content_system_prompt, rewrite_prompt, content, session_uuid, access_token, model, doc_tools_enabled)
         result_content = rewrite_result
     else: 
         print("content looks valid")
@@ -214,8 +213,6 @@ def handle_polishing():
 
     access_token, polish_content_system_prompt, model, invoke_agent_arn = get_config(polish_content_entity_type)
 
-    # invoke_agent_arn = "arn:aws:bedrock-agentcore:us-west-2:011271748719:runtime/polishagent-f55YTAHrt2"
-    
     with open('validated.md', 'r') as file:
         content = file.read()
         #print(content)
@@ -234,8 +231,6 @@ def handle_drafting():
 
     access_token, draft_content_system_prompt, model, invoke_agent_arn = get_config(draft_content_entity_type)
 
-    # invoke_agent_arn = "arn:aws:bedrock-agentcore:us-west-2:011271748719:runtime/draftagent-3HGlni7thC"
-    
     with open('outline.md', 'r') as file:
         content = file.read()
 
